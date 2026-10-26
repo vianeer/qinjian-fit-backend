@@ -1,0 +1,63 @@
+﻿{% extends "admin/base.html" %}
+{% block title %}{{ '编辑饮食方案' if template else '新增饮食方案' }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ '编辑饮食方案' if template else '新增饮食方案' }}</h1>
+<form method="post" class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">方案名称 *</label>
+        <input class="form-control" name="name" required value="{{ template.name if template else '' }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">健身目标 *</label>
+        <select class="form-select" name="fitness_goal">
+          {% for value, label in [('muscle_gain','增肌'),('fat_loss','减脂'),('shaping','塑形')] %}
+          <option value="{{ value }}" {% if template and template.fitness_goal == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">适用性别</label>
+        <select class="form-select" name="gender">
+          <option value="">通用</option>
+          <option value="male" {% if template and template.gender == 'male' %}selected{% endif %}>男</option>
+          <option value="female" {% if template and template.gender == 'female' %}selected{% endif %}>女</option>
+          <option value="other" {% if template and template.gender == 'other' %}selected{% endif %}>其他</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">训练部位（可空）</label>
+        <input class="form-control" name="body_part" placeholder="胸部 / 臀腿" value="{{ template.body_part if template and template.body_part else '' }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">餐次数量</label>
+        <input class="form-control" type="number" name="meal_count" min="1" value="{{ template.meal_count if template else 3 }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">全天热量</label>
+        <input class="form-control" type="number" name="total_calories" value="{{ template.total_calories if template else 2000 }}">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" name="is_enabled" id="is_enabled" {% if not template or template.is_enabled %}checked{% endif %}>
+          <label class="form-check-label" for="is_enabled">启用</label>
+        </div>
+      </div>
+      <div class="col-12">
+        <label class="form-label">饮食建议</label>
+        <textarea class="form-control" name="tips" rows="2">{{ template.tips if template else '' }}</textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">餐次明细 JSON *</label>
+        <textarea class="form-control font-monospace" name="meals_json" rows="14" required>{{ meals_json }}</textarea>
+        <div class="form-text">meal_type 可选 breakfast、lunch、dinner、snack；food_items 为字符串数组。</div>
+      </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">保存</button>
+      <a class="btn btn-secondary" href="{{ url_for('admin.diet_list') }}">返回</a>
+    </div>
+  </div>
+</form>
+{% endblock %}

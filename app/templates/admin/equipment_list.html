@@ -1,0 +1,40 @@
+﻿{% extends "admin/base.html" %}
+{% block title %}器械资料{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">器械资料</h1>
+  <a class="btn btn-primary" href="{{ url_for('admin.equipment_new') }}">新增器械</a>
+</div>
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead class="table-light">
+        <tr><th>ID</th><th>分类</th><th>名称</th><th>组数/次数</th><th>休息</th><th>视频链接</th><th>启用状态</th><th>占用状态</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+      {% for item in items %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.category.name }}</td>
+          <td class="fw-semibold">{{ item.name }}</td>
+          <td>{{ item.recommended_sets }} 组 / {{ item.recommended_reps }}</td>
+          <td>{{ item.rest_seconds }} 秒</td>
+          <td class="text-truncate" style="max-width:220px">{{ item.video_url }}</td>
+          <td>{% if item.is_active %}<span class="badge bg-success">启用</span>{% else %}<span class="badge bg-secondary">停用</span>{% endif %}</td>
+          <td>{% if item.occupy_status %}<span class="badge bg-warning text-dark">{{ item.occupy_status_text }}</span>{% else %}<span class="badge bg-light text-dark">空闲</span>{% endif %}</td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.equipment_edit', equipment_id=item.id) }}">编辑</a>
+            <form class="d-inline" method="post" action="{{ url_for('admin.equipment_delete', equipment_id=item.id) }}" onsubmit="return confirm('确认删除该器械？');">
+              <button class="btn btn-sm btn-outline-danger" type="submit">删除</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="9" class="text-center text-muted py-4">暂无器械数据</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+

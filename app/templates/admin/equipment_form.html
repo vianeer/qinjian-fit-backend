@@ -1,0 +1,95 @@
+﻿{% extends "admin/base.html" %}
+{% block title %}{{ '编辑器械' if equipment else '新增器械' }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ '编辑器械' if equipment else '新增器械' }}</h1>
+<form method="post" class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">训练分类 *</label>
+        <select class="form-select" name="category_id" required>
+          {% for category in categories %}
+          <option value="{{ category.id }}" {% if equipment and equipment.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">器械名称 *</label>
+        <input class="form-control" name="name" required value="{{ equipment.name if equipment else '' }}">
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">封面占位图 URL</label>
+        <input class="form-control" name="cover_url" value="{{ equipment.cover_url if equipment else 'https://placehold.co/750x420/png?text=Equipment' }}">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">排序</label>
+        <input class="form-control" type="number" name="sort_order" value="{{ equipment.sort_order if equipment else 0 }}">
+      </div>
+      <div class="col-12">
+        <label class="form-label">详情图 URL（每行一个占位地址）</label>
+        <textarea class="form-control" name="image_urls" rows="2">{{ (equipment.image_urls or [])|join('\n') if equipment else '' }}</textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">器械文字说明 *</label>
+        <textarea class="form-control" name="description" rows="2" required>{{ equipment.description if equipment else '' }}</textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">动作要领</label>
+        <textarea class="form-control" name="action_key_points" rows="4">{{ equipment.action_key_points if equipment else '' }}</textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">发力要点</label>
+        <textarea class="form-control" name="force_points" rows="4">{{ equipment.force_points if equipment else '' }}</textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">常见错误</label>
+        <textarea class="form-control" name="common_mistakes" rows="3">{{ equipment.common_mistakes if equipment else '' }}</textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">抖音视频链接 / mp4 演示占位地址</label>
+        <input class="form-control" name="video_url" placeholder="https://www.douyin.com/video/placeholder-1" value="{{ equipment.video_url if equipment else '' }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">推荐组数</label>
+        <input class="form-control" type="number" name="recommended_sets" min="1" value="{{ equipment.recommended_sets if equipment else 3 }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">推荐次数</label>
+        <input class="form-control" name="recommended_reps" value="{{ equipment.recommended_reps if equipment else '12' }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">组间休息（秒）</label>
+        <input class="form-control" type="number" name="rest_seconds" min="0" value="{{ equipment.rest_seconds if equipment else 60 }}">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" name="is_active" id="is_active" {% if not equipment or equipment.is_active %}checked{% endif %}>
+          <label class="form-check-label" for="is_active">启用该器械</label>
+        </div>
+      </div>
+      <div class="col-12"><hr><h2 class="h6 mb-0">器械占用状态（管理员异常校正）</h2></div>
+      <div class="col-md-3">
+        <label class="form-label">当前状态</label>
+        <select class="form-select" name="occupy_status">
+          <option value="0" {% if not equipment or not equipment.occupy_status %}selected{% endif %}>空闲</option>
+          <option value="1" {% if equipment and equipment.occupy_status == 1 %}selected{% endif %}>占用</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">占用用户 ID</label>
+        <input class="form-control" type="number" name="occupy_user_id" value="{{ equipment.occupy_user_id if equipment and equipment.occupy_user_id else '' }}">
+      </div>
+      <div class="col-md-5">
+        <label class="form-label">占用开始时间</label>
+        <input class="form-control" type="datetime-local" name="occupy_start_time" value="{{ equipment.occupy_start_time.strftime('%Y-%m-%dT%H:%M') if equipment and equipment.occupy_start_time else '' }}">
+      </div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">保存</button>
+      <a class="btn btn-secondary" href="{{ url_for('admin.equipment_list') }}">返回</a>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
+

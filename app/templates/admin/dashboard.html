@@ -1,0 +1,37 @@
+﻿{% extends "admin/base.html" %}
+{% block title %}数据概览{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">数据概览</h1>
+  <span class="text-muted small">管理器械、知识、饮食及用户上报</span>
+</div>
+<div class="row g-3">
+  {% set cards = [
+    ('器械总数', stats.equipment_count, 'primary'),
+    ('小程序用户', stats.user_count, 'success'),
+    ('知识文章', stats.article_count, 'warning'),
+    ('饮食方案', stats.diet_count, 'info'),
+    ('占用上报', stats.report_count, 'danger')
+  ] %}
+  {% for label, value, color in cards %}
+  <div class="col-sm-6 col-xl">
+    <div class="card card-stat border-{{ color }} shadow-sm">
+      <div class="card-body">
+        <div class="text-muted small">{{ label }}</div>
+        <div class="display-6">{{ value }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="card border-0 shadow-sm mt-4">
+  <div class="card-body">
+    <h2 class="h5">快速入口</h2>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <a class="btn btn-outline-primary" href="{{ url_for('admin.equipment_new') }}">新增器械</a>
+      <a class="btn btn-outline-success" href="{{ url_for('admin.knowledge_new') }}">新增知识文章</a>
+      <a class="btn btn-outline-info" href="{{ url_for('admin.diet_new') }}">新增饮食方案</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
